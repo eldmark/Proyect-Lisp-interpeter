@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class NewLexer {
+/**
+ * Clase que implementa un parser y evaluador para expresiones LISP.
+ */
+public class LispParser {
     
-    public NewLexer() {
-    }
-
+    private static Lexer lexer = new Lexer();
+    
     /**
      * Parsea una expresión LISP y la convierte en una estructura de listas anidadas.
      * 
