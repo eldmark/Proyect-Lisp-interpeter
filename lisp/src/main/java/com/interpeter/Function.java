@@ -50,11 +50,11 @@ public class Function {
      */
     public void replaceParamsInBody() {
         for (int i = 0; i < body.size(); i++) {
-            String[] line = body.get(i);
-            for (int j = 0; j < line.length; j++) {
-                int paramIndex = params.indexOf(line[j]);
+            ArrayList<?> line = body.get(i);
+            for (int j = 0; j < line.size(); j++) {
+                int paramIndex = params.indexOf(line.get(j));
                 if (paramIndex != -1) {
-                    line[j] = params.get(paramIndex);
+                    ((ArrayList<Object>) line).set(j, params.get(paramIndex));
                 }
             }
             body.set(i, line);

@@ -30,7 +30,7 @@ public class Lexer {
      * This class was based on a class made by Chatgpt
      * It was addapted to the needs of the project by Marco Díaz
      */
-    private static boolean reservedWord(String token) {
+    public static boolean reservedWord(String token) {
         final Set<String> lispReservedWords = new HashSet<>();
         // Special Forms from the Common Lisp standard
         String[] specialForms = { "defun", "lambda", "defmacro", "defparameter", "defvar", "defconstant", "setq",
