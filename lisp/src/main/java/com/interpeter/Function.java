@@ -50,12 +50,11 @@ public class Function {
      */
     public void replaceParamsInBody() {
         for (int i = 0; i < body.size(); i++) {
-            ArrayList<String> line = body.get(i);  // Ahora `line` es un ArrayList<String>
+            ArrayList<?> line = body.get(i);
             for (int j = 0; j < line.size(); j++) {
-                String token = line.get(j);
-                int paramIndex = params.indexOf(token);
+                int paramIndex = params.indexOf(line.get(j));
                 if (paramIndex != -1) {
-                    line.set(j, params.get(paramIndex));  // Corrige el valor en la lista
+                    ((ArrayList<Object>) line).set(j, params.get(paramIndex));
                 }
             }
         }
