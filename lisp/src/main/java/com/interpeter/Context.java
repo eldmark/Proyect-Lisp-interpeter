@@ -2,6 +2,7 @@ package com.interpeter;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.interpeter.Function;
 
 public class Context {
     private Map<String, String> variables = new HashMap<String, String>();
