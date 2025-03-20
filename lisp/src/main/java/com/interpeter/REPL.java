@@ -23,7 +23,7 @@ public class REPL {
                 ArrayList<String> tokens = lexer.tokenize(input);
                 
                 // Parsea los tokens
-                Object ast = LispParser.parseTokens(new java.util.LinkedList<>(tokens));
+                Object ast = Parser.parseTokens(new java.util.LinkedList<>(tokens));
                 
                 // Evalúa la expresión
                 Object result = evaluator.evaluate(ast);

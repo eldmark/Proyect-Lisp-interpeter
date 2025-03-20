@@ -14,60 +14,67 @@ public class Parser {
         this.context = context;
     }
 
-    /**
-     * Parsea una expresión LISP y la convierte en una estructura de listas anidadas.
-     * @param expression La expresión LISP en formato de cadena.
-     * @return Una estructura de listas representando la expresión.
-     */
     public Object parse(String expression) {
         ArrayList<String> tokens = lexer.tokenize(expression);
         if (tokens == null) {
             throw new RuntimeException("Error en la expresión LISP: Paréntesis desbalanceados");
         }
+        System.out.println("Tokens: " + tokens);
         return parseTokens(new LinkedList<>(tokens));
     }
 
-    /**
-     * Convierte una lista de tokens en una estructura anidada de listas y gestiona el contexto.
-     * @param tokens Lista de tokens a procesar.
-     * @return Una estructura de listas anidadas representando la expresión LISP.
-     */
     private Object parseTokens(LinkedList<String> tokens) {
         if (tokens.isEmpty()) {
-            throw new RuntimeException("Unexpected end of input");
+            throw new RuntimeException("Fin de entrada inesperado");
         }
 
         String token = tokens.poll();
+
         if ("(".equals(token)) {
             List<Object> list = new ArrayList<>();
             while (!tokens.isEmpty() && !")".equals(tokens.peek())) {
                 list.add(parseTokens(tokens));
             }
             if (tokens.isEmpty()) {
-                throw new RuntimeException("Unmatched parentheses");
+                throw new RuntimeException("Paréntesis no balanceados");
             }
-            tokens.poll(); // Consume ')'
-
-            // Manejo básico del setq
-            if (!list.isEmpty() && "SETQ".equals(list.get(0))) {
-                // ejemplo: (setq x 5)
-                if (list.size() == 3) {
-                    String varName = list.get(1).toString();
-                    String varValue = list.get(2).toString();
-                    context.setVariable(varName, varValue);
-                    System.out.println("Variable guardada en contexto: " + varName + " = " + varValue);
-                } else {
-                    throw new RuntimeException("Uso incorrecto de SETQ");
-                }
-            }
-
-            return list;
+            tokens.poll();
+            
+            return procesarSetq(list);
         } else if (")".equals(token)) {
-            throw new RuntimeException("Unexpected closing parenthesis");
+            throw new RuntimeException("Paréntesis de cierre inesperado");
         } else {
-            // Chequea si es un número o deja como string
-            return token.matches("\\d+") ? Integer.parseInt(token) : token;
+            return parseTokenValue(token);
         }
+    }
+
+    private Object procesarSetq(List<Object> list) {
+        if (!list.isEmpty() && "SETQ".equalsIgnoreCase(list.get(0).toString())) {
+            if (list.size() == 3) {
+                String varName = list.get(1).toString();
+                Object varValueObj = list.get(2);
+                String varValue = varValueObj.toString();
+                
+                context.setVariable(varName, varValue); // Guardar correctamente la variable
+                System.out.println("Variable guardada: " + varName + " = " + varValue);
+                return varValueObj;
+            } else {
+                throw new RuntimeException("Uso incorrecto de SETQ");
+            }
+        }
+        return list;
+    }
+
+    private Object parseTokenValue(String token) {
+        if (token.matches("\\d+")) {
+            return Integer.parseInt(token);
+        }
+        String value = context.getVariable(token);
+        if (value != null) {
+            System.out.println("Variable encontrada: " + token + " = " + value);
+            return Integer.parseInt(value);
+        }
+        return token;
     }
 
     public static void main(String[] args) {
@@ -76,28 +83,20 @@ public class Parser {
         Context context = new Context();
         Parser parser = new Parser(lexer, context);
 
-        System.out.print("Ingrese una expresión LISP: ");
-        String expression = scanner.nextLine();
-        scanner.close();
+        while (true) {
+            System.out.print("\nIngrese una expresión LISP (o 'exit' para salir): ");
+            String expression = scanner.nextLine();
 
-        try {
-            Object parsedExpression = parser.parse(expression);
-            System.out.println("Parseado: " + parsedExpression);
+            if (expression.equalsIgnoreCase("exit")) break;
 
-            // Probando acceso al Context
-            System.out.print("Ingrese una variable a consultar en el Contexto: ");
-            Scanner varScanner = new Scanner(System.in);
-            String var = varScanner.nextLine();
-            varScanner.close();
-            String value = context.getVariable(var);
-            if (value != null) {
-                System.out.println("Valor de " + var + ": " + value);
-            } else {
-                System.out.println("Variable no encontrada.");
+            try {
+                Object parsedExpression = parser.parse(expression);
+                System.out.println("Parseado: " + parsedExpression);
+                System.out.println("Variables en contexto: " + context.getVariables());
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
             }
-
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
         }
+        scanner.close();
     }
 }

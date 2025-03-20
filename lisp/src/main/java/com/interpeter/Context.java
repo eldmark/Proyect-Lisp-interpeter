@@ -1,4 +1,3 @@
-
 package com.interpeter;
 
 import java.util.HashMap;
@@ -12,6 +11,9 @@ public class Context {
     }
 
     public void setVariable(String name, String value) {
+        if (variables.containsKey(name)) {
+            variables.remove(name);
+        }
         variables.put(name, value);
     }
 
@@ -34,11 +36,14 @@ public class Context {
     public Map<String, Function> getFunctions() {
         return functions;
     }
+
     public Function getFunction(String name) {
         return functions.get(name);
     }
+
     public void setFunctions(Map<String, Function> functions) {
         this.functions = functions;
     }
-
 }
+// Compare this snippet from lisp/src/main/java/com/interpeter/Function.java:
+// package com.interpeter;

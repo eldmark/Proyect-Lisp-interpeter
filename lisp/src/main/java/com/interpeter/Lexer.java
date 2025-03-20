@@ -34,8 +34,7 @@ public class Lexer {
         final Set<String> lispReservedWords = new HashSet<>();
         // Special Forms from the Common Lisp standard
         String[] specialForms = { "defun", "lambda", "defmacro", "defparameter", "defvar", "defconstant", "setq",
-                "setf",
-                "quote", "progn", "if", "cond", "case", "when", "unless", "let", "let*", "multiple-value-bind",
+                "setf", "quote", "progn", "if", "cond", "case", "when", "unless", "let", "let*", "multiple-value-bind",
                 "loop", "do", "do*", "dolist", "dotimes", "return", "return-from", "block", "go", "tagbody",
                 "eval-when", "progv", "unwind-protect", "catch", "throw" };
 

@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class Function {
     private String name;
     private ArrayList<String> params;
-    private ArrayList<ArrayList<?>> body;
+    private ArrayList<ArrayList<String>> body;
 
-    public Function(String name, ArrayList<String> params, ArrayList<ArrayList<?>> body) {
+    public Function(String name, ArrayList<String> params, ArrayList<ArrayList<String>> body) {
         this.name = name;
         this.params = params;
         this.body = body;
@@ -21,7 +21,7 @@ public class Function {
         return params;
     }
 
-    public ArrayList<ArrayList<?>> getBody() {
+    public ArrayList<ArrayList<String>> getBody() {
         return body;
     }
 
@@ -33,7 +33,7 @@ public class Function {
         this.params = params;
     }
 
-    public void setBody(ArrayList<ArrayList<?>> body) {
+    public void setBody(ArrayList<ArrayList<String>> body) {
         this.body = body;
     }
 
@@ -50,14 +50,14 @@ public class Function {
      */
     public void replaceParamsInBody() {
         for (int i = 0; i < body.size(); i++) {
-            String[] line = body.get(i);
-            for (int j = 0; j < line.length; j++) {
-                int paramIndex = params.indexOf(line[j]);
+            ArrayList<String> line = body.get(i);  // Ahora `line` es un ArrayList<String>
+            for (int j = 0; j < line.size(); j++) {
+                String token = line.get(j);
+                int paramIndex = params.indexOf(token);
                 if (paramIndex != -1) {
-                    line[j] = params.get(paramIndex);
+                    line.set(j, params.get(paramIndex));  // Corrige el valor en la lista
                 }
             }
-            body.set(i, line);
         }
     }
 }
