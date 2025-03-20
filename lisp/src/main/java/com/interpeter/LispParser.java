@@ -32,7 +32,7 @@ public class LispParser {
      * @param tokens Lista de tokens a procesar.
      * @return Una estructura de listas anidadas representando la expresión LISP.
      */
-    private static Object parseTokens(LinkedList<String> tokens) {
+    public static Object parseTokens(LinkedList<String> tokens) {
         if (tokens.isEmpty()) {
             throw new RuntimeException("Unexpected end of input");
         }
