@@ -4,21 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Function {
-    private String name;
-    private ArrayList<String> params;
-    private ArrayList<List<?>> body; // Ahora guarda listas parseadas (AST)
 
-    public Function(String name, ArrayList<String> params, ArrayList<List<?>> body) {
-        this.name = name;
-        this.params = params;
-        this.body = body;
-    }
+        private String name;
+        private List<String> params;
+        private ArrayList<List<?>> body;
+    
+        public Function(String name, List<String> params, ArrayList<List<?>> body) {
+            this.name = name;
+            this.params = params;
+            this.body = body;
+        }
+    
+        // Other methods and constructors
+
 
     public String getName() {
         return name;
     }
 
-    public ArrayList<String> getParams() {
+    public List<String> getParams() {
         return params;
     }
 
@@ -30,7 +34,7 @@ public class Function {
         this.name = name;
     }
 
-    public void setParams(ArrayList<String> params) {
+    public void setParams(List<String> params) {
         this.params = params;
     }
 

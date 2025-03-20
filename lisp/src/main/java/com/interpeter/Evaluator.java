@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Evaluator {
-
     private Context context;
 
     public Evaluator(Context context) {
@@ -16,9 +15,9 @@ public class Evaluator {
 
         if (expr instanceof String) {
             String varName = (String) expr;
-            String value = context.getVariable(varName);
+            Object value = context.getVariable(varName);
             if (value != null) {
-                try { return Integer.parseInt(value); } catch (NumberFormatException e) { return value; }
+                return value;
             }
             return varName;
         }
@@ -32,12 +31,16 @@ public class Evaluator {
             switch (operation) {
                 case "defun": return evaluateDefun(list);
                 case "if": return evaluateIf(list.subList(1, list.size()));
-                case "+": case "-": case "*": case "/": return evalArithmetic(operation, list.subList(1, list.size()));
-                case "<": case "<=": case ">": case ">=": case "=": case "/=": return evalLogical(operation, list.subList(1, list.size()));
+                case "+": case "-": case "*": case "/": 
+                    return evalArithmetic(operation, list.subList(1, list.size()));
+                case "<": case "<=": case ">": case ">=": case "=": case "/=": 
+                    return evalLogical(operation, list.subList(1, list.size()));
                 default:
                     Function func = context.getFunction(operation);
-                    if (func != null) return executeFunction(func, list.subList(1, list.size()));
-                    return evalArithmetic(operation, list.subList(1, list.size())); // fallback aritmético
+                    if (func != null) {
+                        return executeFunction(func, list.subList(1, list.size()));
+                    }
+                    throw new IllegalArgumentException("Función no definida: " + operation);
             }
         }
         throw new IllegalArgumentException("Tipo de expresión no soportada");
@@ -45,10 +48,11 @@ public class Evaluator {
 
     private Object evaluateDefun(List<?> list) {
         String funcName = list.get(1).toString();
-        ArrayList<String> params = new ArrayList<>((List<String>) list.get(2));
+        @SuppressWarnings("unchecked")
+        List<String> params = (List<String>) list.get(2);
         ArrayList<List<?>> body = new ArrayList<>();
         for (int i = 3; i < list.size(); i++) {
-            body.add((List<?>) list.get(i)); // Guardamos la AST parseada
+            body.add((List<?>) list.get(i));
         }
         context.setFunction(funcName, new Function(funcName, params, body));
         return "Función " + funcName + " definida.";
@@ -59,44 +63,54 @@ public class Evaluator {
         temp.getVariables().putAll(context.getVariables());
         temp.getFunctions().putAll(context.getFunctions());
 
-        for (int i = 0; i < func.getParams().size(); i++) {
-            temp.setVariable(func.getParams().get(i), evaluate(args.get(i)).toString());
+        List<String> params = func.getParams();
+        for (int i = 0; i < params.size(); i++) {
+            Object evaluatedArg = evaluate(args.get(i));
+            temp.setVariable(params.get(i), evaluatedArg.toString());
         }
 
         Object result = null;
         for (List<?> expr : func.getBody()) {
-            result = new Evaluator(temp).evaluate(expr);  // Soporta recursividad
+            result = new Evaluator(temp).evaluate(expr);
         }
         return result;
     }
 
     private Object evaluateIf(List<?> args) {
         Object condition = evaluate(args.get(0));
-        if (Boolean.TRUE.equals(condition) || (condition instanceof Integer && (int) condition != 0)) {
-            return evaluate(args.get(1));
-        } else {
-            return evaluate(args.get(2));
+        if (condition instanceof Boolean) {
+            return (Boolean) condition ? evaluate(args.get(1)) : evaluate(args.get(2));
+        } else if (condition instanceof Integer) {
+            return ((Integer) condition != 0) ? evaluate(args.get(1)) : evaluate(args.get(2));
         }
+        throw new RuntimeException("Condición inválida en IF");
     }
 
     private Object evalArithmetic(String op, List<?> args) {
-        int result = resolveToInt(args.get(0));
+        if (args.isEmpty()) throw new RuntimeException("Se requieren argumentos para operación aritmética");
+        
+        int result = resolveToInt(evaluate(args.get(0)));
         for (int i = 1; i < args.size(); i++) {
-            int val = resolveToInt(args.get(i));
+            int val = resolveToInt(evaluate(args.get(i)));
             switch (op) {
                 case "+": result += val; break;
                 case "-": result -= val; break;
                 case "*": result *= val; break;
-                case "/": result /= val; break;
+                case "/": 
+                    if (val == 0) throw new ArithmeticException("División por cero");
+                    result /= val; 
+                    break;
             }
         }
         return result;
     }
-    
 
     private Object evalLogical(String op, List<?> args) {
-        int a = (int) evaluate(args.get(0));
-        int b = (int) evaluate(args.get(1));
+        if (args.size() != 2) throw new RuntimeException("Las operaciones lógicas requieren exactamente 2 argumentos");
+        
+        int a = resolveToInt(evaluate(args.get(0)));
+        int b = resolveToInt(evaluate(args.get(1)));
+        
         switch (op) {
             case "<": return a < b;
             case "<=": return a <= b;
@@ -104,22 +118,20 @@ public class Evaluator {
             case ">=": return a >= b;
             case "=": return a == b;
             case "/=": return a != b;
+            default: throw new RuntimeException("Operador lógico no soportado: " + op);
         }
-        return false;
     }
 
     private int resolveToInt(Object obj) {
-        System.out.println("Resolviendo a entero: " + obj);
-        Object evaluated = evaluate(obj);
-        if (evaluated instanceof Integer) {
-            return (Integer) evaluated;
-        } else if (evaluated instanceof String) {
-            try { return Integer.parseInt((String) evaluated); } 
-            catch (NumberFormatException e) { 
-                throw new RuntimeException("No se pudo convertir a entero: " + evaluated); 
+        if (obj instanceof Integer) {
+            return (Integer) obj;
+        } else if (obj instanceof String) {
+            try {
+                return Integer.parseInt((String) obj);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("No se pudo convertir a entero: " + obj);
             }
         }
-        throw new RuntimeException("No se pudo convertir a entero: " + evaluated);
+        throw new RuntimeException("No se pudo convertir a entero: " + obj);
     }
-    
 }
