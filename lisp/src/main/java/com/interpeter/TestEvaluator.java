@@ -4,7 +4,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Clase de prueba para el evaluador de expresiones.
+ * Esta clase contiene el método principal que inicializa el contexto y el evaluador,
+ * y ejecuta una serie de pruebas sobre expresiones similares a Lisp.
+ */
 public class TestEvaluator {
+    
+    /**
+     * Método principal que ejecuta las pruebas.
+     * Este método inicializa el contexto y el evaluador, y ejecuta varias expresiones
+     * para verificar su correcto funcionamiento.
+     *
+     * @param args Argumentos de línea de comandos (no se utilizan en esta implementación).
+     */
     public static void main(String[] args) {
         // Inicializa el contexto y el evaluador.
         Context context = new Context();
