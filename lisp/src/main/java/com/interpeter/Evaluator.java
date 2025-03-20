@@ -120,11 +120,11 @@ public class Evaluator {
         @SuppressWarnings("unchecked")
         ArrayList<String> params = new ArrayList<>((List<String>) list.get(2));
         // Se asume que el cuerpo de la función es una lista de expresiones (listas anidadas)
-        ArrayList<List<?>> body = new ArrayList<>();
+        ArrayList<ArrayList<?>> body = new ArrayList<>();
         for (int i = 3; i < list.size(); i++) {
             Object line = list.get(i);
             if (line instanceof List) {
-                body.add((List<?>) line);
+                body.add(new ArrayList<>((List<?>) line));
             } else {
                 throw new IllegalArgumentException("El cuerpo de la función debe estar formado por listas de expresiones");
             }
