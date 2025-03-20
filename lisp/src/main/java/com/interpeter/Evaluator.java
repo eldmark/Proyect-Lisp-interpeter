@@ -22,6 +22,10 @@ public class Evaluator {
             List<?> list = (List<?>) expr;
             if (list.isEmpty()) return null;
 
+            if (list.get(0) instanceof Integer) {
+            return evaluateOperation("+", list);
+            }
+
             String operation = list.get(0).toString();
 
             // Definición de variables
@@ -31,10 +35,11 @@ public class Evaluator {
                 context.setVariable(varName, value.toString());
                 return value;
             }
-
+            
             // Definición de funciones
             if (operation.equals("defun")) {
                 String funcName = list.get(1).toString();
+                @SuppressWarnings("unchecked")
                 ArrayList<String> params = new ArrayList<>((List<String>) list.get(2));
                 ArrayList<String[]> body = new ArrayList<>();
                 for (int i = 3; i < list.size(); i++) {
@@ -49,19 +54,42 @@ public class Evaluator {
                 context.setFunction(funcName, function);
                 return "Función " + funcName + " definida.";
             }
-
+            
             // Llamada a funciones definidas
             Function func = context.getFunction(operation);
             if (func != null) {
-                return executeFunction(func, list.subList(1, list.size()));
+                if (operation.equals("if")) {
+                    return evaluateLogicalExpresion(list.get(1).toString(), list.subList(2, list.size()));
+                }
+    
+                // Operaciones aritméticas básicas
+                return evaluateOperation(operation, list.subList(1, list.size()));
             }
+            if (context.getFunction(operation) != null) {
+                return executeFunction(context.getFunction(operation), list.subList(1, list.size()));
+            }
+            if (operation.equals("dotimes")) {
+                return evaluateDotimes(list.subList(1, list.size()));
+            }
+            return null;
 
-            // Operaciones aritméticas básicas
-            return evaluateOperation(operation, list.subList(1, list.size()));
         }
         return null;
     }
+    private Object evaluateDotimes(List<?> args) {
+        String varName = args.get(0).toString();
+        int limit = (int) evaluate(args.get(1));
+        List<?> body = args.subList(2, args.size());
 
+        Object result = null;
+        for (int i = 0; i < limit; i++) {
+            context.setVariable(varName, Integer.toString(i));
+            for (Object expr : body) {
+                result = evaluate(expr);
+            }
+        }
+        return result;
+    }
     private Object evaluateOperation(String operation, List<?> args) {
         int result = (int) evaluate(args.get(0));
         for (int i = 1; i < args.size(); i++) {
@@ -95,5 +123,39 @@ public class Evaluator {
             result = new Evaluator(tempContext).evaluate(lineList);
         }
         return result;
+
     }
+    private Object evaluateLogicalExpresion(String operation, List<?> args) {
+        int firstValue = (int) evaluate(args.get(0));
+        if (operation.equals("=") || operation.equals("/=") || operation.equals("<") || 
+            operation.equals("<=") || operation.equals(">") || operation.equals(">=")) {
+            // Comparison operations
+            for (int i = 1; i < args.size(); i++) {
+                int nextValue = (int) evaluate(args.get(i));
+                switch (operation) {
+                    case "=":
+                        if (firstValue != nextValue) return false;
+                        break;
+                    case "/=":
+                        if (firstValue == nextValue) return false;
+                        break;
+                    case "<":
+                        if (firstValue >= nextValue) return false;
+                        break;
+                    case "<=":
+                        if (firstValue > nextValue) return false;
+                        break;
+                    case ">":
+                        if (firstValue <= nextValue) return false;
+                        break;
+                    case ">=":
+                        if (firstValue < nextValue) return false;
+                        break;
+                }
+                firstValue = nextValue; // Update for the next comparison
+        } 
+    }        return true;
+
+
 }
+    }
