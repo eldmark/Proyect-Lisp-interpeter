@@ -89,9 +89,9 @@ public class Evaluator {
     private Object evalArithmetic(String op, List<?> args) {
         if (args.isEmpty()) throw new RuntimeException("Se requieren argumentos para operación aritmética");
         
-        int result = resolveToInt(evaluate(args.get(0)));
+        double result = resolveToInt(evaluate(args.get(0)));
         for (int i = 1; i < args.size(); i++) {
-            int val = resolveToInt(evaluate(args.get(i)));
+            double val = resolveToInt(evaluate(args.get(i)));
             switch (op) {
                 case "+": result += val; break;
                 case "-": result -= val; break;
@@ -108,30 +108,32 @@ public class Evaluator {
     private Object evalLogical(String op, List<?> args) {
         if (args.size() != 2) throw new RuntimeException("Las operaciones lógicas requieren exactamente 2 argumentos");
         
-        int a = resolveToInt(evaluate(args.get(0)));
-        int b = resolveToInt(evaluate(args.get(1)));
+        double a = resolveToInt(evaluate(args.get(0)));
+        double b = resolveToInt(evaluate(args.get(1)));
         
         switch (op) {
             case "<": return a < b;
             case "<=": return a <= b;
             case ">": return a > b;
             case ">=": return a >= b;
-            case "=": return a == b;
-            case "/=": return a != b;
+            case "=": return Math.abs(a - b) < 0.0001; // Para comparación de doubles
+            case "/=": return Math.abs(a - b) >= 0.0001;
             default: throw new RuntimeException("Operador lógico no soportado: " + op);
         }
     }
 
-    private int resolveToInt(Object obj) {
+    private double resolveToInt(Object obj) {
         if (obj instanceof Integer) {
-            return (Integer) obj;
+            return ((Integer) obj).doubleValue();
+        } else if (obj instanceof Double) {
+            return (Double) obj;
         } else if (obj instanceof String) {
             try {
-                return Integer.parseInt((String) obj);
+                return Double.parseDouble((String) obj);
             } catch (NumberFormatException e) {
-                throw new RuntimeException("No se pudo convertir a entero: " + obj);
+                throw new RuntimeException("No se pudo convertir a número: " + obj);
             }
         }
-        throw new RuntimeException("No se pudo convertir a entero: " + obj);
+        throw new RuntimeException("No se pudo convertir a número: " + obj);
     }
 }

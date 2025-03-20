@@ -51,7 +51,21 @@ public class LispParser {
         } else if (")".equals(token)) {
             throw new RuntimeException("Unexpected closing parenthesis");
         } else {
-            return token.matches("\\d+") ? Integer.parseInt(token) : token;
+            // Modificar esta parte para manejar números decimales y fracciones
+            if (token.matches("-?\\d+(/\\d+)?|-?\\d*\\.?\\d+")) {
+                try {
+                    if (token.contains("/")) {
+                        String[] parts = token.split("/");
+                        double numerator = Double.parseDouble(parts[0]);
+                        double denominator = Double.parseDouble(parts[1]);
+                        return numerator / denominator;
+                    }
+                    return token.contains(".") ? Double.parseDouble(token) : Integer.parseInt(token);
+                } catch (NumberFormatException e) {
+                    return token;
+                }
+            }
+            return token;
         }
     }
     
