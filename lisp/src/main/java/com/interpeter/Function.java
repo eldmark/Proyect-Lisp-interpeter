@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class Function {
     private String name;
     private ArrayList<String> params;
-    private ArrayList<String[]> body;
+    private ArrayList<ArrayList<?>> body;
 
-    public Function(String name, ArrayList<String> params, ArrayList<String[]> body) {
+    public Function(String name, ArrayList<String> params, ArrayList<ArrayList<?>> body) {
         this.name = name;
         this.params = params;
         this.body = body;
@@ -21,7 +21,7 @@ public class Function {
         return params;
     }
 
-    public ArrayList<String[]> getBody() {
+    public ArrayList<ArrayList<?>> getBody() {
         return body;
     }
 
@@ -33,7 +33,7 @@ public class Function {
         this.params = params;
     }
 
-    public void setBody(ArrayList<String[]> body) {
+    public void setBody(ArrayList<ArrayList<?>> body) {
         this.body = body;
     }
 
