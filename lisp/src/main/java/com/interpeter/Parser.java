@@ -5,7 +5,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Clase que se encarga de analizar expresiones LISP, gestionando la tokenización
+ * y el contexto para el almacenamiento de variables.
+ */
 public class Parser {
+    
+    /**
+     * Crea una nueva instancia de Parser.
+     *
+     * @param lexer El objeto Lexer utilizado para la tokenización.
+     * @param context El contexto que contiene variables y funciones.
+     */
     private Lexer lexer;
     private Context context;
 
@@ -14,6 +25,13 @@ public class Parser {
         this.context = context;
     }
 
+    /**
+     * Analiza una expresión LISP y devuelve su representación estructurada.
+     *
+     * @param expression La expresión LISP en formato de cadena.
+     * @return La representación estructurada de la expresión.
+     * @throws RuntimeException Si hay un error en la expresión LISP.
+     */
     public Object parse(String expression) {
         ArrayList<String> tokens = lexer.tokenize(expression);
         if (tokens == null) {
@@ -23,6 +41,13 @@ public class Parser {
         return parseTokens(new LinkedList<>(tokens));
     }
 
+    /**
+     * Procesa una lista de tokens y los convierte en una estructura de datos.
+     *
+     * @param tokens La lista de tokens a procesar.
+     * @return La estructura de datos resultante.
+     * @throws RuntimeException Si hay un error en la lista de tokens.
+     */
     private Object parseTokens(LinkedList<String> tokens) {
         if (tokens.isEmpty()) {
             throw new RuntimeException("Fin de entrada inesperado");
@@ -48,6 +73,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Procesa una asignación de variable (SETQ) en la lista de tokens.
+     *
+     * @param list La lista que representa la asignación de variable.
+     * @return El valor asignado a la variable.
+     * @throws RuntimeException Si el uso de SETQ es incorrecto.
+     */
     private Object procesarSetq(List<Object> list) {
         if (!list.isEmpty() && "SETQ".equalsIgnoreCase(list.get(0).toString())) {
             if (list.size() == 3) {
@@ -65,6 +97,12 @@ public class Parser {
         return list;
     }
 
+    /**
+     * Convierte un token en su valor correspondiente.
+     *
+     * @param token El token a convertir.
+     * @return El valor correspondiente al token.
+     */
     private Object parseTokenValue(String token) {
         if (token.matches("\\d+")) {
             return Integer.parseInt(token);
@@ -77,6 +115,11 @@ public class Parser {
         return token;
     }
 
+    /**
+     * Método principal que inicia el bucle de entrada del usuario para el intérprete LISP.
+     *
+     * @param args Argumentos de línea de comandos (no utilizados).
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Lexer lexer = new Lexer();
