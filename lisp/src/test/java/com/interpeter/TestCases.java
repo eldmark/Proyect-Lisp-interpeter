@@ -42,7 +42,7 @@
          Object parsed = LispParser.parse("( + 1 2 )");
          assertTrue(parsed instanceof List);
          List<?> parsedList = (List<?>) parsed;
-         assertEquals(List.of("+", 1, 2), parsedList);
+         assertEquals(List.of("+", 1.0, 2.0), parsedList);
      }
  
      @Test
@@ -56,7 +56,7 @@
          LinkedList<String> tokens = new LinkedList<>(List.of("(", "+", "1", "2", ")"));
          Object result = LispParser.parseTokens(tokens);
          assertTrue(result instanceof List);
-         assertEquals(List.of("+", 1, 2), result);
+         assertEquals(List.of("+", 1.0, 2.0), result);
      }
  
      @Test
