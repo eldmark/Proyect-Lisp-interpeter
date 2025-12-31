@@ -81,9 +81,8 @@ Compile and run the project using your preferred IDE or via terminal:
 Once running, the interpreter starts a REPL (Read–Eval–Print Loop).
 
 ### Example Usage
-          ```bash
-          
-                   ( defun fibonacci ( n ) 
+
+          ( defun fibonacci ( n ) 
                    ( if ( <= n 1 ) n 
                    ( + ( fibonacci ( - n 1 ) ) ( fibonacci ( - n 2 ) ) ) 
                    ) 
@@ -101,9 +100,9 @@ My specific contributions include:
 
 
 Project Status
-✔ Completed
-✔ Supports recursion, control structures, and list operations
-✔ Ready for testing and future extensions (e.g. macros, additional LISP primitives)
+- Completed
+- Supports recursion, control structures, and list operations
+- Ready for testing and future extensions (e.g. macros, additional LISP primitives)
 
  Disclaimer
 This project was developed for educational purposes, focusing on interpreter design and language implementation concepts.
