@@ -1,74 +1,109 @@
-LISP Interpreter - Java Project
-Descripción
-Este proyecto es un intérprete de LISP básico desarrollado en Java. Permite:
+# LISP Interpreter in Java
 
-✅ Definir y evaluar funciones (`defun`)  
-✅ Manejar variables (`setq`)  
-✅ Soportar expresiones aritméticas y lógicas  
-✅ Ejecutar estructuras de control (`if`, `cond`, `dotimes`)  
-✅ Evaluar recursividad (ejemplo: `fibonacci`)  
-✅ Trabajar con listas (`car`, `cdr`, `cons`, `append`, etc.)
+A basic **LISP interpreter implemented in Java**, capable of parsing and evaluating expressions, managing variables and user-defined functions, supporting recursion, control structures, and list operations. The project simulates the internal mechanics of an interpreted programming language.
 
-El programa parsea expresiones LISP, las evalúa y permite almacenar variables y funciones en un contexto propio.
+---
 
-Estructura del proyecto
-```
-/src/com/interpeter/
+##  Project Overview
+
+This project implements a **custom LISP interpreter** built from scratch in Java. It includes all core components required for interpreting a programming language, such as tokenization, parsing, abstract syntax tree (AST) evaluation, and execution context management.
+
+The interpreter supports arithmetic and logical expressions, control flow structures, recursion, and list manipulation, providing a functional subset of the LISP language.
+
+---
+
+## Key Concepts Implemented
+
+- Lexical analysis (tokenization)
+- Parsing expressions into nested structures (AST)
+- Expression evaluation
+- Execution context (variables and functions)
+- Recursive function calls
+- List processing and symbolic computation
+
+---
+
+##  Supported Features
+
+- Variable definition and assignment (`setq`)
+- User-defined functions (`defun`)
+- Arithmetic and logical operations
+- Conditional expressions (`if`, `cond`)
+- Looping constructs (`dotimes`)
+- Recursive evaluation (e.g. Fibonacci)
+- List operations (`car`, `cdr`, `cons`, `append`, etc.)
+- Error handling (invalid syntax, missing arguments, mismatched parentheses)
+
+---
+
+## Project Structure
+
+
+Each component is designed with a clear responsibility, following a modular and maintainable structure.
+
+/src/com/interpreter/
 │
-├── Lexer.java          # Tokenizador de expresiones LISP
-├── Parser.java         # Convierte las expresiones en listas anidadas (AST)
-├── Evaluator.java      # Ejecuta las expresiones y funciones LISP
-├── Context.java        # Guarda variables y funciones
-├── Function.java       # Representa funciones definidas por el usuario
-└── Main.java           # Ejecuta el REPL y conecta todo el flujo
-```
+├── Lexer.java # Tokenizes LISP expressions
+├── Parser.java # Parses tokens into nested lists (AST)
+├── Evaluator.java # Evaluates expressions and executes logic
+├── Context.java # Stores variables and user-defined functions
+├── Function.java # Represents user-defined LISP functions
+└── Main.java # Entry point and REPL execution
 
-Requisitos para ejecutar:
-- JDK 11 o superior
-- IDE o terminal con compilador Java
+---
 
-Uso básico en consola:
-```lisp
-LISP> (setq x 5)
-LISP> (+ x 10)
-Resultado Evaluado: 15
+## Technologies Used
 
-LISP> (defun fibonacci (n) (if (<= n 1) n (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))
-LISP> (fibonacci 7)
-Resultado Evaluado: 13
-```
-Características principales:
-- Recursividad soportada
-- Almacenamiento de variables
-- Evaluación de condicionales y bucles
-- Soporte de listas y operaciones sobre ellas
-- Manejo de errores (paréntesis, argumentos faltantes, etc.)
+- Java (JDK 11+)
+- Core data structures (lists, trees)
+- Recursive algorithms
+- Interpreter design principles
 
-Ejemplos de expresiones soportadas
-```lisp
-( defun malan ( m n ) ( if ( = n 0 ) 1 ( * m ( malan m ( - n 1 ) ) ) ) )
-( malan 2 3 )
+---
 
-( defun fibonacci ( n ) ( if ( <= n 1 ) n ( + ( fibonacci ( - n 1 ) ) ( fibonacci ( - n 2 ) ) ) ) )
-( fibonacci 7 )
+## Getting Started
 
-( defun convertir ( c ) ( + ( * c ( / 9 5 ) ) 32 ) )
-( convertir 30 )
+### Prerequisites
 
-( SETQ x 2 )
-( + x 2 )
-```
+- Java JDK 11 or higher
+- Java-compatible IDE or terminal environment
 
-Créditos
-- Autores: 
-          - Marco Díaz (24229)
-          - Norman Aguirre (24479)
-          - Hugo Méndez (241265)
-- Universidad del Valle de Guatemala
-- Curso de Algoritmos y Estructuras de datos - Semestre 1 - 2025
+---
 
-Estado del proyecto
-✔ Finalizado: Se soportan funciones recursivas, estructuras de control y operaciones de listas.  
-✔ Listo para pruebas o futuras extensiones (manejo de macros, más funciones LISP).
+### Compilation and Execution
 
-Disclaimer: Este proyecto es académico y fue desarrollado con fines educativos. ***
+Compile and run the project using your preferred IDE or via terminal:
+          ```bash
+
+                              javac Main.java
+                              java Main
+
+Once running, the interpreter starts a REPL (Read–Eval–Print Loop).
+
+### Example Usage
+          ```bash
+          
+                   ( defun fibonacci ( n ) 
+                   ( if ( <= n 1 ) n 
+                   ( + ( fibonacci ( - n 1 ) ) ( fibonacci ( - n 2 ) ) ) 
+                   ) 
+                   ) 
+                   ( fibonacci 7 )
+
+### My Contributions
+This project was developed as a team collaboration.
+My specific contributions include:
+- eldmark (Marco Díaz)
+- The context module
+  - where functions and variables and are stored
+- Recursive logic
+- Lexer logic
+
+
+Project Status
+✔ Completed
+✔ Supports recursion, control structures, and list operations
+✔ Ready for testing and future extensions (e.g. macros, additional LISP primitives)
+
+ Disclaimer
+This project was developed for educational purposes, focusing on interpreter design and language implementation concepts.
