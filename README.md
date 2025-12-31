@@ -40,7 +40,7 @@ The interpreter supports arithmetic and logical expressions, control flow struct
 
 
 Each component is designed with a clear responsibility, following a modular and maintainable structure.
-
+```plaintext
 /src/com/interpreter/
 │
 ├── Lexer.java # Tokenizes LISP expressions
@@ -50,7 +50,7 @@ Each component is designed with a clear responsibility, following a modular and 
 ├── Function.java # Represents user-defined LISP functions
 └── Main.java # Entry point and REPL execution
 
----
+```
 
 ## Technologies Used
 
